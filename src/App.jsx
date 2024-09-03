@@ -1,34 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useMovies } from './hooks/useMovies'
+import { Movies } from './components/Movies'
 import './App.css'
+import { useEffect, useState, useRef } from 'react'
+
+function useSearch () {
+  const [search, updateSearch] = useState('')
+  const [error, setError] = useState(null)
+  const isFirstInput = useRef(true)
+
+  useEffect(() => {
+    if (isFirstInput.current) {
+      isFirstInput.current = search === ''
+      return
+    }
+    if (search === '') {
+      setError('You can\'t search an empty input')
+      return
+    }
+
+    if (search.match(/^\d+$/)) {
+      setError('You can\'t search numbers')
+      return
+    }
+
+    if (search.length < 3) {
+      setError('The search must be at least 3 characters long')
+      return
+    }
+    setError(null)
+  }, [search])
+  return { search, updateSearch, error}
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { movies } = useMovies()
+  const { search, updateSearch, error } = useSearch()
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+  }
+
+  const handleChange = (event) => {
+    updateSearch(event.target.value)
+  }
+
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='page'>
+      <header>
+        <h1>Technical Test</h1>
+        <form onSubmit={handleSubmit}>
+          <input onChange={handleChange} value={search} type="text" placeholder='Avengers, matrix ...'/>
+          <button>Search</button>
+        </form>
+        {error && <p style={{color: 'red'}}>{error}</p>}
+      </header>
+      <main>
+        {
+          <Movies movies={movies} /> 
+        }
+      </main>
+    </div>
   )
 }
 
