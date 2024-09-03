@@ -1,10 +1,11 @@
 function ListOfMovies ({ movies }) {
     return (
-        <ul>
+        <ul className='movies-list__container'>
             {
                 movies.map(movie => {
                 return (
-                <li
+                <li 
+                    className='list-item'
                     key={movie.id}
                 >
                     <h3>{movie.title}</h3>

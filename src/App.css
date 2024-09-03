@@ -8,3 +8,27 @@ form {
   display: flex;
   justify-content: center;
 }
+
+main {
+  width: 100%;
+}
+
+.movies-list__container {
+  display: grid;
+  gap: 20px;
+  place-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  list-style: none;
+  padding: 0;
+}
+
+.list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-item h3, p {
+  margin: 0;
+  padding: 0;
+}
