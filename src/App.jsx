@@ -1,48 +1,31 @@
+import { useCallback } from 'react'
 import { useMovies } from './hooks/useMovies'
+import { useSearch } from './hooks/useSearch'
 import { Movies } from './components/Movies'
+import debounce from 'just-debounce-it'
 import './App.css'
-import { useEffect, useState, useRef } from 'react'
 
-function useSearch () {
-  const [search, updateSearch] = useState('')
-  const [error, setError] = useState(null)
-  const isFirstInput = useRef(true)
 
-  useEffect(() => {
-    if (isFirstInput.current) {
-      isFirstInput.current = search === ''
-      return
-    }
-    if (search === '') {
-      setError('You can\'t search an empty input')
-      return
-    }
-
-    if (search.match(/^\d+$/)) {
-      setError('You can\'t search numbers')
-      return
-    }
-
-    if (search.length < 3) {
-      setError('The search must be at least 3 characters long')
-      return
-    }
-    setError(null)
-  }, [search])
-  return { search, updateSearch, error}
-}
 
 function App() {
   const { search, updateSearch, error } = useSearch()
   const { movies, loading, getMovies } = useMovies({ search })
 
+  const debounceGetMovies = useCallback(
+    debounce(search => {
+    console.log(search)
+    getMovies({ search })
+  }, 500), [])
+
   const handleSubmit = (event) => {
     event.preventDefault()
-    getMovies()
+    getMovies({ search })
   }
 
   const handleChange = (event) => {
-    updateSearch(event.target.value)
+    const newSearch = event.target.value
+    updateSearch(newSearch)
+    debounceGetMovies(newSearch)
   }
 
 
