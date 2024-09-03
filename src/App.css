@@ -10,7 +10,9 @@ form {
 }
 
 main {
+  margin-block-start: 20px;
   width: 100%;
+  text-align: center;
 }
 
 .movies-list__container {
@@ -31,4 +33,8 @@ main {
 .list-item h3, p {
   margin: 0;
   padding: 0;
+  font-size: .9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
